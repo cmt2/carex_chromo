@@ -1,0 +1,12 @@
+Carex_orig/
+convergence.pdf
+scripts/script_ChromoSSE_Carex_root_informative.Rev
+scripts/tp_ChromoSSE_carex_new_moves.Rev
+scripts/tp_ChromoSSE_carex_newest_moves.Rev
+scripts/tp_ChromoSSE_carex_old_moves_.Rev
+output/.DS_Store
+data/.DS_Store
+scripts/.DS_Store
+.DS_Store
+
+
