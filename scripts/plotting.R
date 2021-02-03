@@ -1,11 +1,11 @@
 library(RevGadgets)
 library(coda)
-t <- readTrace(path = c("Desktop/carex/output/tp_dirichlet.log"))
+t <- readTrace(path = "~/Documents/carex_chromo/output/tp_dirichlet.log")
 trace <- t[[1]]
 
 ess <- effectiveSize(as.mcmc(trace))
 
-pdf("~/Desktop/carex/convergence.pdf")
+pdf("~/Documents/carex_chromo/convergence_orig.pdf")
 par(mfrow=c(3,1))
 plot(trace$clado_fission, 
      type = "l", 
