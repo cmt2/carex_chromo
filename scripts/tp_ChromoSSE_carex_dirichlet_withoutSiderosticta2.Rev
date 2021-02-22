@@ -227,8 +227,8 @@ monitors[2] = mnModel(printgen=1, file="output/tp_dirichlet_withoutSiderosticta_
 
 # analysis
 my_mcmc = mcmc(my_model, monitors, moves)
-my_mcmc.burnin(1000, tuningInterval=100)
-#my_mcmc.initializeFromCheckpoint("output/tp_dirichlet_withoutSiderosticta_run2.state") # to restart from checkpoint
+#my_mcmc.burnin(1000, tuningInterval=100)
+my_mcmc.initializeFromCheckpoint("output/tp_dirichlet_withoutSiderosticta_run2.state") # to restart from checkpoint
 #my_mcmc.run(generations=1000, tuningInterval=10)
 my_mcmc.run(generations=25000,
 			checkpointInterval=100, 
