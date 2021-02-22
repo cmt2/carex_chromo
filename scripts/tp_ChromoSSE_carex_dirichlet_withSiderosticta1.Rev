@@ -1,5 +1,5 @@
-# loadPlugin("TensorPhylo", "/Users/carrietribble/.plugins")
-loadPlugin("TensorPhylo")
+loadPlugin("TensorPhylo", "/Users/revbayes/Documents/phylogenetic_superpower/tensorphyloprototype/build/installer/lib")
+#loadPlugin("TensorPhylo")
 
 #seed(1)
 
@@ -214,13 +214,13 @@ monitors[2] = mnModel(printgen=1, file="output/tp_dirichlet_withSiderosticta_run
 
 # analysis
 my_mcmc = mcmc(my_model, monitors, moves)
-#my_mcmc.burnin(1000, tuningInterval=100)
+my_mcmc.burnin(1000, tuningInterval=100)
 #my_mcmc.initializeFromCheckpoint("output/tp_dirichlet_withSiderosticta_run1.state") # to restart from checkpoint
-my_mcmc.run(generations=1000)
-#my_mcmc.run(generations=25000,
-#			checkpointInterval=100, 
-#			checkpointFile="output/tp_dirichlet_withSiderosticta_run1.state")
-my_mcmc.operatorSummary()
+#my_mcmc.run(generations=1000)
+my_mcmc.run(generations=25000,
+			checkpointInterval=100, 
+			checkpointFile="output/tp_dirichlet_withSiderosticta_run1.state")
+#my_mcmc.operatorSummary()
 
 
 
