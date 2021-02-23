@@ -97,7 +97,7 @@ tc[[1]]$diff_fission_nochange <- tc[[1]]$clado_fission-tc[[1]]$clado_no_change
 tc[[1]]$diff_fusion_nochange <- tc[[1]]$clado_fusion-tc[[1]]$clado_no_change
 
 ##### produce summary plots #####
-pdf("~/Documents/carex_chromo/convergence_withoutSiderosticta_all.pdf")
+pdf("~/Documents/carex_chromo/convergence_withoutSiderosticta.pdf")
 
 ##### plot traces #####
 par(mfrow=c(3,2))
@@ -192,7 +192,7 @@ table1 <- tableGrob(sum_clado_t1_df, theme = ttheme_default(base_size = 10))
 text1 <- textGrob("Trace 1", just = "left")
 table2 <- tableGrob(sum_clado_t2_df, theme = ttheme_default(base_size = 10))
 text2 <- textGrob("Trace 2", just = "left")
-tablec <- tableGrob(sum_clado_t3_df, theme = ttheme_default(base_size = 10))
+tablec <- tableGrob(sum_clado_tc_df, theme = ttheme_default(base_size = 10))
 textc <- textGrob("Combined Trace", just = "left")
 
 layout <- rbind(c(1, 2, 2, 2),
