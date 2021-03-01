@@ -215,7 +215,7 @@ table1 <- tableGrob(sum_ana_t1_df, theme = ttheme_default(base_size = 10))
 text1 <- textGrob("Trace 1", just = "left")
 table2 <- tableGrob(sum_ana_t2_df, theme = ttheme_default(base_size = 10))
 text2 <- textGrob("Trace 2", just = "left")
-tablec <- tableGrob(sum_ana_t3_df, theme = ttheme_default(base_size = 10))
+tablec <- tableGrob(sum_ana_tc_df, theme = ttheme_default(base_size = 10))
 textc <- textGrob("Combined Trace", just = "left")
 
 layout <- rbind(c(1, 2, 2, 2),
