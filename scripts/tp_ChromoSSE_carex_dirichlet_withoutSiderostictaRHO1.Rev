@@ -4,14 +4,14 @@ loadPlugin("TensorPhylo", "/Users/revbayes/Documents/phylogenetic_superpower/ten
 #seed(1)
 
 # read the data
-tree = readTrees("data/phy3f_pruned.tree")[1]
-#tree = readTrees("data/Carex_withoutSiderosticta.tree")[1]
+#tree = readTrees("data/phy3f_pruned.tree")[1]
+tree = readTrees("data/Carex_withoutSiderosticta.tree")[1]
 age  = tree.rootAge()
 taxa = tree.taxa()
 
 k    = 72
-data = readCharacterDataDelimited("data/carex_chromosome_counts.tsv", stateLabels=(k + 1), type="NaturalNumbers", delimiter="\t", headers=FALSE)
-#data = readCharacterDataDelimited("data/carex_chromosome_counts_withoutSiderosticta.tsv", stateLabels=(k + 1), type="NaturalNumbers", delimiter="\t", headers=FALSE)
+#data = readCharacterDataDelimited("data/carex_chromosome_counts.tsv", stateLabels=(k + 1), type="NaturalNumbers", delimiter="\t", headers=FALSE)
+data = readCharacterDataDelimited("data/carex_chromosome_counts_withoutSiderosticta.tsv", stateLabels=(k + 1), type="NaturalNumbers", delimiter="\t", headers=FALSE)
 
 mvi = 0
 
@@ -209,17 +209,17 @@ my_model = model(x)
 
 # monitors
 monitors[1] = mnScreen(printgen=1)
-monitors[2] = mnModel(printgen=1, file="output/tp_dirichlet_withSiderosticta_run1.log")
+monitors[2] = mnModel(printgen=1, file="output/tp_dirichlet_withoutSiderostictaRHO_run1.log")
 #monitors[3] = mnJointConditionalAncestralState(filename="output/ChromoSSE_anc_states.log", printgen=1, tree=tree, cdbdp=x, withStartStates=true, type="NaturalNumbers")
 
 # analysis
 my_mcmc = mcmc(my_model, monitors, moves)
 my_mcmc.burnin(1000, tuningInterval=100)
-#my_mcmc.initializeFromCheckpoint("output/tp_dirichlet_withSiderosticta_run1.state") # to restart from checkpoint
+#my_mcmc.initializeFromCheckpoint("output/tp_dirichlet_withoutSiderostictaRHO_run1.state") # to restart from checkpoint
 #my_mcmc.run(generations=1000)
 my_mcmc.run(generations=25000,
 			checkpointInterval=100, 
-			checkpointFile="output/tp_dirichlet_withSiderosticta_run1.state")
+			checkpointFile="output/tp_dirichlet_withoutSiderostictaRHO_run1.state")
 #my_mcmc.operatorSummary()
 
 
