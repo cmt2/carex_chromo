@@ -221,7 +221,7 @@ monitors[3] = mnJointConditionalAncestralState(filename="output/ChromoSSE_anc_st
 
 # analysis
 my_mcmc = mcmc(my_model, monitors, moves)
-#my_mcmc.burnin(1000, tuningInterval=100)
+my_mcmc.burnin(100, tuningInterval=10)
 #my_mcmc.initializeFromCheckpoint("output/tp_dirichlet_withSiderosticta_run2.state") # to restart from checkpoint
 #my_mcmc.run(generations=1000)
 my_mcmc.run(generations=5000,
