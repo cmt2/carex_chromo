@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=chromoSSE_anc_states
-#SBATCH --time=00-00:30:00
+#SBATCH --time=14-00:00:00
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=8G
 #SBATCH --account=zenilab
