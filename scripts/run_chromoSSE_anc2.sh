@@ -13,4 +13,6 @@
 module load devel/Boost/1.69.0-GCCcore-6.3.0
 module load toolchain/intel/2018.5.274
 
+cd carex_chromo
+
 ./rb scripts/tp_ChromoSSE_carex_dirichlet_withSiderosticta_anc_states2.Rev

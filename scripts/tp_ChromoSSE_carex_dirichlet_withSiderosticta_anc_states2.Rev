@@ -1,5 +1,5 @@
-loadPlugin("TensorPhylo", "/Users/revbayes/Documents/phylogenetic_superpower/tensorphyloprototype/build/installer/lib")
-#loadPlugin("TensorPhylo")
+#loadPlugin("TensorPhylo", "/Users/revbayes/Documents/phylogenetic_superpower/tensorphyloprototype/build/installer/lib")
+loadPlugin("TensorPhylo")
 
 #seed(1)
 
