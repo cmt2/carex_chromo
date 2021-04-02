@@ -1,4 +1,7 @@
-loadPlugin("TensorPhylo", "/Users/carrietribble/.plugins")
+# loadPlugin("TensorPhylo", "/Users/carrietribble/.plugins")
+loadPlugin("TensorPhylo","/Users/revbayes/Documents/phylogenetic_superpower/tensorphyloprototype/build/installer/lib/")
+
+#seed(1)
 
 # read the data
 tree = readTrees("data/phy3f_pruned.tree")[1]
@@ -13,9 +16,11 @@ mvi = 0
 # rate matrix
 gamma ~ dnExponential(2)
 moves[++mvi] = mvScale(gamma)
+gamma.setValue(6)
 
 delta ~ dnExponential(2)
 moves[++mvi] = mvScale(delta)
+delta.setValue(6)
 
 rho <- abs(0.0)
 
@@ -27,15 +32,41 @@ speciation_mean <- ln( taxa.size() ) / tree.rootAge()
 speciation_pr <- 1 / speciation_mean
 
 # Each cladogenetic event type is assigned its own speciation rate.
-clado_no_change ~ dnExponential(speciation_pr)
-clado_fission ~ dnExponential(speciation_pr)
-clado_fusion ~ dnExponential(speciation_pr)
-clado_polyploid <- 0
-clado_demipoly <- 0
+total_speciation ~ dnExponential(speciation_pr)
+moves[++mvi] = mvScale(total_speciation, lambda=0.2)
+total_speciation.setValue(1.2)
+
+relative_clado ~ dnDirichlet([1,1,1])
+moves[++mvi] = mvBetaSimplex(relative_clado, alpha=10)
+moves[++mvi] = mvElementSwapSimplex(relative_clado)
+relative_clado.setValue(simplex([1,5,5]))
+
+clado_rates := total_speciation * abs(relative_clado)
+
+clado_no_change := clado_rates[1]
+clado_fission   := clado_rates[2]
+clado_fusion    := clado_rates[3]
+
+# clado_no_change ~ dnExponential(speciation_pr)
+# clado_fission ~ dnExponential(speciation_pr)
+# clado_fusion ~ dnExponential(speciation_pr)
+clado_polyploid <- 0.0
+clado_demipoly <- 0.0
+
 # MCMC moves for speciation rates
-moves[++mvi] = mvScale(clado_no_change, lambda=5.0, weight=1)
-moves[++mvi] = mvScale(clado_fission, lambda=5.0, weight=1)
-moves[++mvi] = mvScale(clado_fusion, lambda=5.0, weight=1)
+# moves[++mvi] = mvScale(clado_no_change, lambda=1.0, weight=3/5)
+# moves[++mvi] = mvScale(clado_fission, lambda=1.0, weight=3/5)
+# moves[++mvi] = mvScale(clado_fusion, lambda=1.0, weight=3/5)
+
+#adding joint moves for speciation parameters
+# moves[++mvi] = mvUpDownScale(weight=3/5)
+# moves[mvi].addVariable(clado_fission, up=true)
+# moves[mvi].addVariable(clado_fusion, up=false)
+
+# moves[++mvi] = mvUpDownScale(weight=3/5)
+# moves[mvi].addVariable(clado_fission, up=true)
+# moves[mvi].addVariable(clado_no_change, up=false)
+
 
 
 ne = 0
@@ -135,13 +166,19 @@ for(i in 1:k) { # this index is the number of chromosomes
 omega := fnCladogeneticProbabilityMatrix(clado_events, clado_probs, k + 1)
 
 # diversification parameters
-total_speciation := clado_no_change + clado_fission + clado_fusion + clado_polyploid + clado_demipoly
-turnover ~ dnUniform(0, 1.0)
-turnover.setValue(0.4)
-moves[++mvi] = mvScale(turnover, lambda=5.0, weight=3.0)
+# total_speciation := clado_no_change + clado_fission + clado_fusion + clado_polyploid + clado_demipoly
+turnover ~ dnExponential(speciation_pr)
+turnover.setValue(0.85)
+moves[++mvi] = mvScale(turnover, lambda=0.5)
 for (i in 1:(k + 1)) {
-    mu[i] := turnover * total_speciation
+    mu[i] := turnover
 }
+
+moves[++mvi] = mvUpDownScale(weight=1, lambda=0.5)
+# moves[mvi].addVariable(clado_no_change, up=true)
+# moves[mvi].addVariable(clado_fission, up=true)
+moves[mvi].addVariable(total_speciation, up=true)
+moves[mvi].addVariable(turnover, up=true)
 
 frac             <- 0.4
 root_frequencies <- simplex(rep(1, k + 1))
@@ -158,6 +195,7 @@ x ~ dnGLHBDSP(rootAge   = age,
 			  condition = condition,
 			  taxa      = taxa,
 			  nStates   = k + 1)
+
 x.clamp(tree)
 x.clampCharData(data)
 x.lnProbability()
@@ -167,13 +205,19 @@ my_model = model(x)
 
 # monitors
 monitors[1] = mnScreen(printgen=1)
-monitors[2] = mnModel(printgen=10, file="output/tp.log")
+monitors[2] = mnModel(printgen=1, file="output/tp_dirichlet.log")
 #monitors[3] = mnJointConditionalAncestralState(filename="output/ChromoSSE_anc_states.log", printgen=1, tree=tree, cdbdp=x, withStartStates=true, type="NaturalNumbers")
 
 # analysis
 my_mcmc = mcmc(my_model, monitors, moves)
 my_mcmc.burnin(1000, tuningInterval=100)
-my_mcmc.run(250000)
+#my_mcmc.initializeFromCheckpoint("output/tp_dirichlet.state") # to restart from checkpoint
+#my_mcmc.run(generations=1000, tuningInterval=10)
+my_mcmc.run(generations=250000,
+			checkpointInterval=100, 
+			checkpointFile="output/tp_dirichlet.state")
+my_mcmc.operatorSummary()
+
 
 
 q()
