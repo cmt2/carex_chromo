@@ -135,7 +135,12 @@ makeCarexPlots <- function(trace_dir, plot_dir, data_dir) {
         if (grepl("noRHO", trace_dir)) {
                 print(plotTrace(tc, vars = c("gamma","delta")))     
         } else {
-                print(plotTrace(tc, vars = c("gamma","delta","rho")))
+                p1 <- plotTrace(tc, vars = c("gamma","delta"))[[1]]
+                p2 <- plotTrace(tc, vars = c("rho"))[[1]]
+                layout <- rbind(c(1),
+                                c(2))
+                grid.arrange(grobs = list(p1,p2),
+                             layout_matrix = layout)
         }
         
         tablec <- tableGrob(sum_ana_df, theme = ttheme_default(base_size = 10))
@@ -153,4 +158,5 @@ data_dir <- "~/Desktop/ChromoSSE_Carex_output/"
 plot_dir <- "~/Desktop/plots/"
 trace_dirs <- c("withoutSiderosticta_noRHO","withoutSiderosticta_RHO",  
                 "withSiderosticta_noRHO", "withSiderosticta_RHO")
+trace_dirs <- trace_dirs[4]
 lapply(trace_dirs, makeCarexPlots, plot_dir, data_dir)
