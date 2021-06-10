@@ -1,5 +1,5 @@
 library(RevGadgets)
-res <- processAncStates(path = "~/Documents/carex_chromo/output/anc_states1.tre",
+res <- processAncStates(path = "~/Desktop/anc_states/anc_states_withoutSid.tre",
                       labels_as_numbers = T )
 
 states <- levels(attributes(res)$state_labels)

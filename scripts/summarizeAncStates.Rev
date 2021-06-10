@@ -1,3 +1,3 @@
-tree = readTrees("data/phy3f_pruned.tree")[1]
-trace= readAncestralStateTrace("output/withSiderosticta_RHO_ancstates/ChromoSSE_anc_states_combined.log")
-ancestralStateTree(tree,trace, include_start_states = TRUE, burnin = 0, file = "anc_states1.tre")
+tree = readTrees("data/Carex_withoutSiderosticta.tree")[1]
+trace = readAncestralStateTrace("output/without_Siderosticta_anc/ChromoSSE_anc_states_combined.log")
+ancestralStateTree(tree,trace, include_start_states = TRUE, burnin = 0, file = "anc_states_withoutSid.tre")
