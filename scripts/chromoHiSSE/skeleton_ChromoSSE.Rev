@@ -1,0 +1,105 @@
+loadPlugin("TensorPhylo", "/home/mike/repos/tensorphyloprototype/build_local")
+
+seed(1)
+
+# read the data
+tree = readTrees("data/aristolochia-bd.tree")[1]
+age  = tree.rootAge()
+taxa = tree.taxa()
+
+k    = 26
+data = readCharacterDataDelimited("data/aristolochia_chromosome_counts.tsv", stateLabels=k + 1, type="NaturalNumbers", delimiter="\t", headers=FALSE)
+
+mvi = 0
+
+# rate matrix
+gamma ~ dnExponential(10)
+moves[++mvi] = mvScale(gamma)
+
+delta ~ dnExponential(10)
+moves[++mvi] = mvScale(delta)
+
+rho ~ dnExponential(10)
+moves[++mvi] = mvScale(rho)
+
+# this function is bad for bichrom 
+# what happens when you cut off- the last column of the matrix 
+# There should be an extra column for k+ 
+Q_chromo_a := fnChromosomes(k, gamma, delta, rho)
+Q_chromo_b := fnChromosomes(k, gamma, delta, rho)
+Q_chromo_h := fnFreeK(?)
+
+weird_matrix := fnCovarionRateMatrix(Q = [Q_chromo_a, Q_chromo_b], switch_rates = Q_chromo_h)
+
+
+
+# cladogenetic stuff
+clado_no_change ~ dnExponential(10)
+moves[++mvi] = mvScale(clado_no_change)
+
+clado_fission ~ dnExponential(10)
+moves[++mvi] = mvScale(clado_fission)
+
+clado_fusion ~ dnExponential(10)
+moves[++mvi] = mvScale(clado_fusion)
+
+clado_polyploid ~ dnExponential(10)
+moves[++mvi] = mvScale(clado_polyploid)
+
+clado_demipoly  <- abs(0.0)
+
+# set a vector to hold the speciation rates
+speciation_rates_a := [clado_no_change, clado_fission, clado_fusion, clado_polyploid, clado_demipoly]
+speciation_rates_b := [clado_no_change, clado_fission, clado_fusion, clado_polyploid, clado_demipoly]
+
+total_speciation_a := sum(speciation_rates_a)
+total_speciation_b := sum(speciation_rates_b)
+
+
+# map the speciation rates to chromosome cladogenetic events
+clado_matrix_a := fnChromosomesCladoEventsBD(speciation_rates_a, k)
+clado_matrix_b := fnChromosomesCladoEventsBD(speciation_rates_b, k)
+
+# empty clado matrix to NOT allow clado changes in hidden character
+clado_matrix_h := fnCladogeneticSpeciationRateMatrix( [[1,1,1],[2,2,2]], [0,0], 2)
+
+#fnCoolFunction needs to be written 
+# this would produce a 3D n x numH by n x numH THING
+clado_weird_matrix := fnCoolFunction(Q = [clado_matrix_a, clado_matrix_b], switch_rates = clado_matrix_h)
+
+lambda := clado_weird_matrix.getSpeciationRateSumPerState()
+omega := clado_weird_matrix.getCladogeneticProbabilityMatrix()
+
+# diversification parameters
+mu               <- rep(0.2, k + 1)
+frac             <- 1.0
+root_frequencies <- simplex(rep(1, k + 1))
+condition        <- "time"
+
+# the distribution
+# would change this to the generic TP one
+x ~ dnCDBDP(rootAge            = age,
+            cladoEventMap      = clado_matrix,
+            extinctionRates    = mu, 
+            Q                  = Q_chromo,
+            pi                 = root_frequencies,
+            rho                = frac,
+			condition          = condition)
+x.clamp(tree)
+x.clampCharData(data)
+x.lnProbability()
+
+# model
+my_model = model(x)
+
+# monitors
+monitors[1] = mnScreen(printgen=1)
+monitors[2] = mnModel(printgen=10, file="output/rb.log")
+
+# analysis
+my_mcmc = mcmc(my_model, monitors, moves)
+my_mcmc.burnin(1000, tuningInterval=100)
+my_mcmc.run(10000)
+
+
+q()
