@@ -11,3 +11,4 @@ scripts/.DS_Store
 scripts/.Rhistory
 history.txt
 output/
+.Rhistory
