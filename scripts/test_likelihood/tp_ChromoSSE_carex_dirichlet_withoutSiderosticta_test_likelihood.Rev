@@ -1,7 +1,7 @@
 # loadPlugin("TensorPhylo", "/Users/carrietribble/.plugins")
 loadPlugin("TensorPhylo")
 
-#seed(1)
+seed(1)
 
 # read the data
 # tree = readTrees("data/phy3f_pruned.tree")[1] # BAD TREE
@@ -212,8 +212,9 @@ x ~ dnGLHBDSP(rootAge   = age,
 			  condition = condition,
 			  taxa      = taxa,
 			  nStates   = k + 1,
-			  nProc     = 16)
-->
+			  nProc     = 16,
+			  zeroIndex = FALSE)
+
 x.clamp(tree)
 x.clampCharData(data)
 x.lnProbability()
