@@ -1,0 +1,9 @@
+psi = readTrees("data/Carex_withoutSiderosticta.tree")[1]
+x = readAncestralStateTrace("output/output/chromohisse_maps_run2.log")
+#summarizeCharacterMaps(x, psi, file="output_stochastic/" + lineages[i] + "_events.tsv", burnin=0.0)
+characterMapTree(psi, 
+                 x, 
+                 character_file="output/stochastic_chromohisse_maps_character.tree", 
+                 posterior_file="output/stochastic_chromohisse_maps_posterior.tree", 
+                 burnin=5, 
+                 reconstruction="marginal")
