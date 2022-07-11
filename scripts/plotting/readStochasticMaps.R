@@ -1,4 +1,3 @@
-
 readStochasticMaps <- function(map_paths, 
                                burnin = 0.1,
                                combine_runs = TRUE) {
