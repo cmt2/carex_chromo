@@ -409,7 +409,7 @@ x ~ dnGLHBDSP(rootAge   = age,
               condition = condition,
               taxa      = taxa,
               nStates   = 2 * (k + 1),
-              nProc     = 18,
+              nProc     = 15,
 		      zeroIndex = FALSE)
 x.clamp(tree)
 x.clampCharData(data)
@@ -421,10 +421,10 @@ my_model = model(x)
 # monitors
 monitors[1] = mnScreen(printgen=1)
 monitors[2] = mnModel(printgen=1, 
-	                  file="output/chromohisse_ana_hidden_mrm_run1.log",
+	                  file="output/chromohisse_ana_hidden_mrm_run2.log",
 	                  exclude = ["clado_probs", "lambda", "mu"])
-# monitors[3] = mnStochasticCharacterMap(glhbdsp = x, printgen = 50, filename = "output/output/chromohisse_ana_hidden_maps_run1.log",
-#                                        include_simmap = true)
+monitors[3] = mnStochasticCharacterMap(glhbdsp = x, printgen = 50, filename = "output/chromohisse_ana_hidden_mrm_maps2.log",
+                                       include_simmap = true)
 
 #monitors[3] = mnJointConditionalAncestralState(filename="output/ChromoSSE_anc_states.log", printgen=1, tree=tree, cdbdp=x, withStartStates=true, type="NaturalNumbers")
 
@@ -435,9 +435,9 @@ my_mcmc = mcmc(my_model, monitors, moves)
 #my_mcmc.initializeFromCheckpoint("output/chromohisse_run1.state") # to restart from checkpoint
 my_mcmc.run(generations=500)
 my_mcmc.run(generations=500, tuningInterval=10000)
-my_mcmc.run(generations=25000,
+my_mcmc.run(generations=250000,
 			checkpointInterval=100, 
-			checkpointFile="output/chromohisse_ana_hidden_run1.state")
+			checkpointFile="output/chromohisse_ana_hidden_mrm_run2.state")
 # my_mcmc.operatorSummary()
 
 

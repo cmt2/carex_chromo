@@ -7,7 +7,8 @@ source("scripts/plotting/readStochasticMaps.R")
 
 ##### READ IN MAPS #####
 my_maps <- 
-  readStochasticMaps(map_paths = "output/chromohisse/chromohisse_maps_run2.log")
+  readStochasticMaps(map_paths = c("output/chromohisse_ana_hidden_mrm_maps1.log",
+                                   "output/chromohisse_ana_hidden_mrm_maps2.log"))
 
 # unlist list of maps
 maps <- my_maps[[1]]
@@ -59,7 +60,7 @@ maps_observed_reversed <- maps_observed
 ##### PLOT HIDDEN #####
 col_vec <- colFun(2)
 names(col_vec) <- c("A", "B")
-pdf("figures/chromohisse_simmap_hidden_rev.pdf", height = 40, width = 10)
+pdf("figures/chromohisse_simmap_ana_hidden_mrm_HIDDEN.pdf", height = 40, width = 10)
 plot_simmap(time_tree = maps_AB_reversed[[1]], 
             tree = maps_AB_reversed[[1]], 
             nt = 10001,
@@ -77,7 +78,7 @@ dev.off()
 states <- as.character(1:72)
 col_vec <- colorRampPalette(c("blue","green"))(72)
 names(col_vec) <- states
-pdf("figures/chromohisse_simmap_observed_rev.pdf", height = 40, width = 10)
+pdf("figures/chromohisse_simmap_ana_hidden_mrm_OBSERVED.pdf", height = 40, width = 10)
 plot_simmap(time_tree = maps_observed_reversed[[1]], 
             tree = maps_observed_reversed[[1]], 
             nt = 10001,
