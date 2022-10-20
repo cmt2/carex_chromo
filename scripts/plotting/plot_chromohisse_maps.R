@@ -7,8 +7,8 @@ source("scripts/plotting/readStochasticMaps.R")
 
 ##### READ IN MAPS #####
 my_maps <- 
-  readStochasticMaps(map_paths = c("output/chromohisse_ana_hidden_mrm_maps1.log",
-                                   "output/chromohisse_ana_hidden_mrm_maps2.log"))
+  readStochasticMaps(map_paths = c("output/chromohisse/chromohisse_ana_hidden_mrm_maps1.log",
+                                   "output/chromohisse/chromohisse_ana_hidden_mrm_maps2.log"))
 
 # unlist list of maps
 maps <- my_maps[[1]]
@@ -57,26 +57,41 @@ maps_observed_reversed <- maps_observed
 #   }
 # }
 
+# read in chromosome counts: 
+
+chromo_data <- read.table("~/Documents/carex_chromo/data/carex_chromosome_counts_withoutSiderosticta.tsv",
+                        sep = "\t")
+
+chromo_data_vec <- chromo_data$V2
+names(chromo_data_vec) <- chromo_data$V1
+
+dat <- chromo_data_vec[maps_AB_reversed[[1]]$tip.label]
+
 ##### PLOT HIDDEN #####
 col_vec <- colFun(2)
 names(col_vec) <- c("A", "B")
-pdf("figures/chromohisse_simmap_ana_hidden_mrm_HIDDEN.pdf", height = 40, width = 10)
+pdf("~/Desktop/tip_data.pdf", height = 40, width = 10)
 plot_simmap(time_tree = maps_AB_reversed[[1]], 
             tree = maps_AB_reversed[[1]], 
             nt = 10001,
             simmaps = maps_AB_reversed, 
             states = c("A", "B"),
-            show.tip.label = TRUE,
+            show.tip.label = FALSE,
+            #text = NULL,
+            #cex = dat/max(dat),
             plot_pie = F,
             lwd = 4,
             label.cex = 0.5,
             colors = col_vec)
-legend(x = 0, y = 200, legend = names(col_vec), col = col_vec, pch = 20)
+tiplabels(pch = 20, 
+          adj = c(1, 0.5),
+          cex = (dat/max(dat)*10))
+# legend(x = 0, y = 200, legend = names(col_vec), col = col_vec, pch = 20)
 dev.off()
 
 ##### PLOT OBSERVED #####
 states <- as.character(1:72)
-col_vec <- colorRampPalette(c("blue","green"))(72)
+col_vec <- colorRampPalette(c("purple","green"))(72)
 names(col_vec) <- states
 pdf("figures/chromohisse_simmap_ana_hidden_mrm_OBSERVED.pdf", height = 40, width = 10)
 plot_simmap(time_tree = maps_observed_reversed[[1]], 
@@ -90,7 +105,7 @@ plot_simmap(time_tree = maps_observed_reversed[[1]],
             lwd = 4,
             label.cex = 0.5,
             colors = col_vec)
-#legend(x = 0, y = 200, legend = names(col_vec), col = col_vec, pch = 20)
+legend(x = 0, y = 200, legend = names(col_vec), col = col_vec, pch = 20)
 dev.off()
 
 
